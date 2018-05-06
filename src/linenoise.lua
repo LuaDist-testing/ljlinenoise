@@ -12,6 +12,7 @@ local type = type
 local xpcall = xpcall
 local traceback = require'debug'.traceback
 local open = require'io'.open
+local sub = require'string'.sub
 local insert = require'table'.insert
 local remove = require'table'.remove
 
@@ -124,11 +125,11 @@ function ED:refreshLine ()
     local s = self.line
     local pos = self.pos
     if self.plen + pos >= self.cols - 1 then
-        s = s:sub(self.plen + pos - self.cols + 1)
+        s = sub(s, self.plen + pos - self.cols + 1)
         pos = self.cols
     end
     if self.plen + #s > self.cols then
-        s = s:sub(1, self.cols - self.plen)
+        s = sub(s, 1, self.cols - self.plen)
     end
     -- Cursor to left edge
     assert(self.fd:write("\x1b[0G"))
@@ -155,7 +156,7 @@ function ED:Insert (c)
             self:refreshLine()
         end
     else
-        self.line = line:sub(1, pos-1) .. c .. line:sub(pos)
+        self.line = sub(line, 1, pos-1) .. c .. sub(line, pos)
         self.pos = pos+1
         self.history:updatelast(self.line)
         self:refreshLine()
@@ -202,7 +203,7 @@ function ED:Delete ()
     local line = self.line
     local pos = self.pos
     if pos > 0 and #line > 0 then
-        self.line = line:sub(1, pos-1) .. line:sub(pos+1)
+        self.line = sub(line, 1, pos-1) .. sub(line, pos+1)
         self.history:updatelast(self.line)
         self:refreshLine()
     end
@@ -212,7 +213,7 @@ function ED:Backspace ()
     local line = self.line
     local pos = self.pos
     if pos > 1 and #line > 0 then
-        self.line = line:sub(1, pos-2) .. line:sub(pos)
+        self.line = sub(line, 1, pos-2) .. sub(line, pos)
         self.pos = pos-1
         self.history:updatelast(self.line)
         self:refreshLine()
@@ -223,7 +224,7 @@ function ED:Swap ()
     local line = self.line
     local pos = self.pos
     if pos > 1 and pos <= #line then
-        self.line = line:sub(1, pos-2) .. line:sub(pos, pos) .. line:sub(pos-1, pos-1) .. line:sub(pos+1)
+        self.line = sub(line, 1, pos-2) .. sub(line, pos, pos) .. sub(line, pos-1, pos-1) .. sub(line, pos+1)
         if pos ~= #line then
             self.pos = pos+1
         end
@@ -240,7 +241,7 @@ function ED:DeleteLine ()
 end
 
 function ED:DeleteEnd ()
-    self.line = self.line:sub(1, self.pos - 1)
+    self.line = sub(self.line, 1, self.pos - 1)
     self.history:updatelast(self.line)
     self:refreshLine()
 end
@@ -510,9 +511,9 @@ return {
     new_history = HARNESS_ACTIVE and new_history or nil,
     new_edit = HARNESS_ACTIVE and new_edit or nil,
     -- Info
-    _VERSION = '0.1.0',
+    _VERSION = '0.1.1',
     _DESCRIPTION = "ljlinenoise : Line editing in pure LuaJIT",
-    _COPYRIGHT = "Copyright (c) 2013 Francois Perrad",
+    _COPYRIGHT = "Copyright (c) 2013-2014 Francois Perrad",
 }
 
 --

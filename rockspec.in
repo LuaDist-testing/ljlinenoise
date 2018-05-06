@@ -26,5 +26,11 @@ build = {
     modules = {
         ['linenoise'] = 'src/linenoise.lua',
     },
+    install = {
+        bin = {
+            'src/lrepl',
+            'src/ljrepl',
+        }
+    },
     copy_directories = { 'doc', 'test' },
 }

@@ -1,12 +1,13 @@
 
 LUA     := luajit
-VERSION := $(shell cd src && $(LUA) -e "m = require [[linenoise]]; print(m._VERSION)")
+VERSION := $(shell cd src && $(LUA) -lbogus -e "m = require [[linenoise]]; print(m._VERSION)")
 TARBALL := ljlinenoise-$(VERSION).tar.gz
 REV     := 1
 
 LUAVER  := 5.1
 PREFIX  := /usr/local
 DPREFIX := $(DESTDIR)$(PREFIX)
+BINDIR  := $(DPREFIX)/bin
 LIBDIR  := $(DPREFIX)/share/lua/$(LUAVER)
 INSTALL := install
 
@@ -15,9 +16,13 @@ all:
 
 install:
 	$(INSTALL) -m 644 -D src/linenoise.lua                  $(LIBDIR)/linenoise.lua
+	$(INSTALL) -m 755 -D src/lrepl                          $(BINDIR)/lrepl
+	$(INSTALL) -m 755 -D src/ljrepl                         $(BINDIR)/ljrepl
 
 uninstall:
 	rm -f $(LIBDIR)/linenoise.lua
+	rm -f $(BINDIR)/lrepl
+	rm -f $(BINDIR)/ljrepl
 
 manifest_pl := \
 use strict; \

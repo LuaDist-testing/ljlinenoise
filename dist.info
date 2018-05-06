@@ -1,6 +1,6 @@
 
 name = "ljlinenoise"
-version = "0.1.0"
+version = "0.1.1"
 
 desc = "Line editing in pure LuaJIT"
 author = "Francois Perrad"

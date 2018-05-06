@@ -1,17 +1,17 @@
 -- This file was automatically generated for the LuaDist project.
 
 package = 'ljlinenoise'
-version = '0.1.0-1'
+version = '0.1.1-1'
 -- LuaDist source
 source = {
-  tag = "0.1.0-1",
+  tag = "0.1.1-1",
   url = "git://github.com/LuaDist-testing/ljlinenoise.git"
 }
 -- Original source
 -- source = {
---     url = 'http://sites.google.com/site/fperrad/ljlinenoise-0.1.0.tar.gz',
---     md5 = '30d015fbb30a70482dae89179ecf3d36',
---     dir = 'ljlinenoise-0.1.0',
+--     url = 'http://sites.google.com/site/fperrad/ljlinenoise-0.1.1.tar.gz',
+--     md5 = '2bd7df23065b563804deb9c5a24c5280',
+--     dir = 'ljlinenoise-0.1.1',
 -- }
 description = {
     summary = "Line editing in pure LuaJIT",
@@ -33,6 +33,12 @@ build = {
     type = 'builtin',
     modules = {
         ['linenoise'] = 'src/linenoise.lua',
+    },
+    install = {
+        bin = {
+            'src/lrepl',
+            'src/ljrepl',
+        }
     },
     copy_directories = { 'doc', 'test' },
 }

@@ -43,6 +43,7 @@
       <ul>
         <li><a href="linenoise.html#reference">Reference</a></li>
         <li><a href="linenoise.html#examples">Examples</a></li>
+        <li><a href="linenoise.html#scripts">Scripts</a></li>
       </ul>
     </li>
     <li><a href="http://fperrad.github.io/ljlinenoise">Project</a>
@@ -136,6 +137,38 @@ for line in L.lines( 'hello> ') do
         end
     end
 end
+</pre>
+
+<h2><a name="scripts"></a>Scripts</h2>
+
+<p>The library is used to implement two Lua <a href="https://en.wikipedia.org/wiki/REPL">REPL</a>
+scripts.</p>
+
+<pre class="example">
+usage: lrepl [options] [script [args]]
+Available options are:
+  -e stat  execute string 'stat'
+  -i       enter interactive mode after executing 'script'
+  -l name  require library 'name'
+  -v       show version information
+  -E       ignore environment variables
+  --       stop handling options
+  -        stop handling options and execute stdin
+</pre>
+
+<pre class="example">
+usage: ljrepl [options]... [script [args]...].
+Available options are:
+  -e chunk  Execute string 'chunk'.
+  -l name   Require library 'name'.
+  -b ...    Save or list bytecode.
+  -j cmd    Perform LuaJIT control command.
+  -O[opt]   Control LuaJIT optimizations.
+  -i        Enter interactive mode after executing 'script'.
+  -v        Show version information.
+  -E        Ignore environment variables.
+  --        Stop handling options.
+  -         Execute stdin and stop handling options.
 </pre>
 
 </div> <!-- id="content" -->

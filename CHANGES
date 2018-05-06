@@ -1,4 +1,7 @@
 Revision history for ljlinenoise
 
+0.1.1  Wed Jan 29 21:30:00 2014
+    - add lrepl & ljrepl
+
 0.1.0  Mon Dec 30 18:30:00 2013
-    First release
+    - First release
