@@ -1,0 +1,13 @@
+
+name = "ljlinenoise"
+version = "0.1.0"
+
+desc = "Line editing in pure LuaJIT"
+author = "Francois Perrad"
+license = "MIT/X11"
+url = "http://fperrad.github.com/ljlinenoise/"
+maintainer = "Francois Perrad"
+
+depends = {
+    "lua ~> 5.1",
+}
