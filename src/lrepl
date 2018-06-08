@@ -1,0 +1,204 @@
+#!/usr/bin/luajit -E
+--
+-- ljlinenoise : <http://fperrad.github.io/ljlinenoise/>
+--
+
+local copyright = "Lua REPL\tCopyright (C) 2014 Francois Perrad"
+
+-- works with lua-linenoise instead of ljlinenoise/ljsyscall
+local isatty = true
+pcall(function ()
+    isatty = require'syscall'.stdin:isatty()
+end)
+
+local function dofile (fname)
+    local f, msg = loadfile(fname)
+    if f then
+        return f()
+    else
+        error(msg, 0)
+    end
+end
+
+local function dostring (chunk, name)
+    local f, msg = load(chunk, name)
+    if f then
+        return f()
+    else
+        error(msg, 0)
+    end
+end
+
+local function dolibrary (name)
+    local r, msg = pcall(require, name)
+    if r then
+        return r
+    else
+        error(msg, 0)
+    end
+end
+
+local function handle_script (script)
+    local fname = arg[script]
+    arg[-2] = arg[-1]
+    arg[-1] = arg[0]
+    arg[0] = fname
+    for i = script+1, #arg do
+        arg[i-script] = arg[i]
+    end
+    if fname == '-' then
+        fname = nil
+    end
+    dofile(fname)
+end
+
+local function dotty ()
+    local l = require 'linenoise'
+    local history = '.history_lua'
+    l.loadhistory(history)
+    for line in l.lines( '> ') do
+        if #line > 0 then
+            if line:sub(1, 1) == '=' then
+                line = 'return ' .. line:sub(2)
+            end
+            local r, msg = pcall(function () return dostring(line, '=stdin') end)
+            if msg then
+                print(msg)
+            end
+            l.addhistory(line)
+            l.savehistory(history)
+        end
+    end
+end
+
+local function collectargs (opt)
+    local i = 1
+    while i <= #arg do
+        local args = arg[i]
+        if args:sub(1, 1) ~= '-' then   -- not an option?
+            return i
+        end
+        local arg1 = args:sub(2, 2)
+        if arg1 == '-' then
+            if #args > 2 then return nil end
+            return arg[i+1] and i+1 or 0
+        elseif arg1 == '' then
+            return i
+        elseif arg1 == 'E' then
+            opt.no_env = true
+        elseif arg1 == 'i' then
+            if #args > 2 then return nil end
+            opt.interactive = true
+            opt.version = true
+        elseif arg1 == 'v' then
+            if #args > 2 then return nil end
+            opt.version = true
+        elseif arg1 == 'e' then
+            opt.exec = true
+            if #args == 2 then
+                i = i + 1
+                if arg[i] == nil then return nil, args end
+            end
+        elseif arg1 == 'l' then
+            if #args == 2 then
+                i = i + 1
+                if arg[i] == nil then return nil, args end
+            end
+        else
+            return nil, args    -- invalid option
+        end
+        i = i + 1
+    end
+    return i
+end
+
+local function runargs(n)
+    local i = 1
+    while i < n do
+        local args = arg[i]
+        local arg2 = args:sub(1, 2)
+        if     arg2 == '-e' then
+            local chunk = args:sub(3)
+            if chunk == '' then
+                i = i + 1
+                chunk = arg[i]
+            end
+            dostring(chunk, "=(command line)")
+        elseif arg2 == '-l' then
+            local name = args:sub(3)
+            if name == '' then
+                i = i + 1
+                name = arg[i]
+            end
+            dolibrary(name)
+        end
+        i = i + 1
+    end
+end
+
+local function handle_luainit ()
+    local name = 'LUA_INIT_5_2'
+    local init = os.getenv(name)
+    if not init then
+        name = 'LUA_INIT'
+        init = os.getenv(name)
+    end
+    if init then
+        if init:sub(1, 1) == '@' then
+            dofile(init:sub(2))
+        else
+            dostring(init, '=' .. name)
+        end
+    end
+end
+
+local function setpath (name, val)
+    if val then
+        package[name] = val:gsub(';;', ';' .. package[name] .. ';')
+    end
+end
+
+local progname = 'lrepl'
+local opt = {}
+local script, badoption = collectargs(opt)
+if not script then
+    if badoption == '-e' or badoption == '-l' then
+        io.stderr:write(string.format("%s: '%s' needs argument\n", progname, badoption))
+    elseif badoption then
+        io.stderr:write(string.format("%s: unrecognized option '%s'\n", progname, badoption))
+    end
+    io.stderr:write(string.format([=[
+usage: %s [options] [script [args]]
+Available options are:
+  -e stat  execute string 'stat'
+  -i       enter interactive mode after executing 'script'
+  -l name  require library 'name'
+  -v       show version information
+  -E       ignore environment variables
+  --       stop handling options
+  -        stop handling options and execute stdin
+]=], progname))
+else
+    if opt.version then
+        print(copyright)
+    end
+    if not opt.no_env then
+        setpath('path', os.getenv('LUA_PATH') or os.getenv('LUA_PATH_5_2'))
+        setpath('cpath', os.getenv('LUA_CPATH') or os.getenv('LUA_CPATH_5_2'))
+        handle_luainit()
+    end
+    runargs(script)             -- execute arguments -e and -l
+    if arg[script] then
+        handle_script(script)   -- execute main script
+    end
+    if opt.interactive then
+        dotty()
+    elseif not arg[script] and not opt.exec and not opt.version then
+        if isatty then
+            print(copyright)
+            dotty()
+        else
+            dofile()            -- executes stdin as a file
+        end
+    end
+end
