@@ -1,0 +1,9 @@
+site_name: ljlinenoise
+site_description: Line editing in pure LuaJIT
+site_author: François Perrad
+repo_url: https://github.com/fperrad/ljlinenoise
+pages:
+- Home: index.md
+- API: ljlinenoise.md
+theme: mkdocs
+copyright: Copyright &copy; 2013-2018 Fran&ccedil;ois Perrad

@@ -2,11 +2,11 @@
 
 require 'Test.More'
 
-if os.getenv'TRAVIS' then
-    skip_all "too old LuaJIT on Travis CI"
+if _VERSION:match'^Lua 5' then
+    skip_all "PUC Lua on Travis CI"
 end
 
-local lua = './ljrepl'
+local lua = 'luajit ./ljrepl'
 
 plan(33)
 

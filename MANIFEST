@@ -4,13 +4,12 @@ MANIFEST
 Makefile
 README.md
 dist.info
-doc/Makefile
-doc/doc.css
-doc/index.html
-doc/linenoise.html
+docs/index.md
+docs/ljlinenoise.md
 eg/example.lua
 eg/repl.lua
 eg/repl_cl.lua
+mkdocs.yml
 rockspec.in
 src/bogus.lua
 src/linenoise.lua
