@@ -1,15 +1,15 @@
 -- This file was automatically generated for the LuaDist project.
 
 package = 'ljlinenoise'
-version = '0.1.3-1'
+version = '0.1.3-2'
 -- LuaDist source
 source = {
-  tag = "0.1.3-1",
-  url = "git://github.com/LuaDist-testing/ljlinenoise.git"
+  url = "git://github.com/LuaDist-testing/ljlinenoise.git",
+  tag = "0.1.3-2"
 }
 -- Original source
 -- source = {
---     url = 'http://github.com/fperrad/ljlinenoise/raw/releases/ljlinenoise-0.1.3.tar.gz',
+--     url = 'https://framagit.org/fperrad/ljlinenoise/raw/releases/ljlinenoise-0.1.3.tar.gz',
 --     md5 = '1741642ef921b311d870c3c82c79d55e',
 --     dir = 'ljlinenoise-0.1.3',
 -- }
@@ -21,7 +21,7 @@ description = {
         ljlinenoise is based on ljsyscall (https://github.com/justincormack/ljsyscall).
         ljlinenoise is compatible with lua-linenoise (https://github.com/hoelzro/lua-linenoise).
     ]],
-    homepage = 'http://fperrad.github.io/ljlinenoise/',
+    homepage = 'http://fperrad.frama.io/ljlinenoise/',
     maintainer = 'Francois Perrad',
     license = 'MIT/X11'
 }
